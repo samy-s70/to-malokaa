@@ -18,12 +18,14 @@
         #login-screen { display: none; padding: 50px 20px; flex-direction: column; align-items: center; min-height: 100vh; justify-content: center; }
         .profile-pic { width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--primary-color); margin-bottom: 20px; object-fit: cover; }
         input { padding: 12px; border-radius: 10px; border: none; width: 250px; text-align: center; margin-bottom: 20px; }
-        button { padding: 10px 30px; background: var(--primary-color); border: none; border-radius: 20px; color: white; font-weight: bold; cursor: pointer; }
+        button { padding: 10px 30px; background: var(--primary-color); border: none; border-radius: 20px; color: white; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        button:hover { transform: scale(1.05); }
         #main-content { display: none; padding: 20px; opacity: 0; transition: 1s; }
         .milestone { background: rgba(255,255,255,0.1); padding: 15px; border-radius: 15px; margin: 10px 0; border-right: 5px solid var(--primary-color); text-align: right; }
         .counter-box { display: flex; justify-content: center; gap: 10px; margin: 20px 0; }
         .unit { background: rgba(255,255,255,0.1); padding: 10px; border-radius: 10px; min-width: 65px; }
-        .val { display: block; font-size: 1.5rem; font-weight: bold; }
+        .val { display: block; font-size: 1.5rem; font-weight: bold; color: var(--primary-color); }
+        .counter-desc { font-size: 0.9rem; color: #ddd; margin-bottom: 30px; padding: 0 10px; line-height: 1.5; }
         .gallery img { width: 100%; border-radius: 15px; margin-bottom: 15px; }
         #final-msg { display: none; margin-top: 20px; padding: 20px; background: rgba(255,77,109,0.3); border-radius: 15px; line-height: 1.8; animation: fadeIn 1s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -60,8 +62,9 @@
             <div class="unit"><span class="val" id="m">0</span> دقيقة</div>
             <div class="unit"><span class="val" id="s">0</span> ثانية</div>
         </div>
+        <p class="counter-desc">العداد دا بداء لحظة م ارتبطنا وهيفضل يعد لاخر يوم ف حياتنا انشاء الله</p>
 
-        <h3 style="margin: 20px 0; color: #ffeb3b;">كان نفسي احط صورنا احنا هنا بس تتعوض انشاء الله</h3>
+        <h3 style="margin: 20px 0; color: #ffeb3b; font-size: 1.1rem;">كان نفسي احط صورنا احنا هنا بس تتعوض انشاء الله</h3>
         <div class="gallery" id="gallery"></div>
 
         <button id="reveal-btn" style="margin-top: 20px; background: #4caf50;" onclick="showMsg()">دوس هنا يا ملوكا 💌</button>
@@ -115,6 +118,7 @@
         function showMsg() {
             document.getElementById('reveal-btn').style.display = 'none';
             document.getElementById('final-msg').style.display = 'block';
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
         }
     </script>
 </body>
