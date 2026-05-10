@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إلى ملك</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
+
+        :root {
+            --primary-color: #ff4d6d;
+            --secondary-color: #800080;
+            --bg-gradient: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            --card-bg: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: white;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Loading Screen */
+        #loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #1a1a2e;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .heart-loader {
+            width: 100px;
+            height: 100px;
+            background: var(--primary-color);
+            position: relative;
+            transform: rotate(-45deg);
+            animation: pulse 1s infinite;
+            box-shadow: 0 0 40px var(--primary-color);
+        }
+
+        .heart-loader::before, .heart-loader::after {
+            content: '';
+            width: 100px;
+            height: 100px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            position: absolute;
+        }
+
+        .heart-loader::before { top: -50px; left: 0; }
+        .heart-loader::after { left: 50px; top: 0; }
+
+        @keyframes pulse {
+            0% { transform: rotate(-45deg) scale(1); }
+            50% { transform: rotate(-45deg) scale(1.1); }
+            100% { transform: rotate(-45deg) scale(1); }
+        }
+
+        #loader p {
+            margin-top: 80px;
+            font-size: 1.2rem;
+            color: #ccc;
+        }
+
+        /* Password Screen */
+        #login-screen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 12, 41, 0.95);
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 900;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .profile-pic {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 3px solid var(--primary-color);
+            margin-bottom: 20px;
+            object-fit: cover;
+            box-shadow: 0 0 20px rgba(255, 77, 109, 0.5);
+        }
+
+        .input-group {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            width: 100%;
+            max-width: 300px;
+        }
+
+        #pass-input {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.1rem;
+            text-align: center;
+            width: 100%;
+            outline: none;
+        }
+
+        #login-btn {
+            margin-top: 20px;
+            padding: 10px 30px;
+            background: var(--primary-color);
+            border: none;
+            border-radius: 20px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        /* Main Content */
+        #main-content {
+            display: none;
+            padding: 20px;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 1s;
+        }
+
+        .header-title {
+            font-size: 1.8rem;
+            margin: 20px 0;
+            text-shadow: 0 0 10px var(--primary-color);
+        }
+
+        .milestone-container {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .milestone-item {
+            margin: 15px 0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .milestone-date {
+            color: var(--primary-color);
+            font-weight: bold;
+            display: block;
+            font-size: 0.9rem;
+        }
+
+        .counter-box {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 30px 0;
+        }
+
+        .counter-unit {
+            background: var(--card-bg);
+            padding: 10px;
+            border-radius: 10px;
+            min-width: 60px;
+        }
+
+        .counter-value {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .counter-label {
+            font-size: 0.7rem;
+            color: #aaa;
+        }
+
+        /* Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .love-card {
+            background: var(--card-bg);
+            height: 120px;
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .card-icon { font-size: 2rem; margin-bottom: 10px; }
+
+        /* Gallery */
+        .gallery {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin: 40px 0;
+        }
+
+        .gallery img {
+            width: 100%;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        /* Floating Hearts */
+        .heart-float {
+            position: fixed;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            pointer-events: none;
+            z-index: 100;
+            animation: floatUp 4s linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            20% { opacity: 1; }
+            100% { transform: translateY(-100px) scale(1.5); opacity: 0; }
+        }
+
+        /* Final Popup */
+        #final-popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 85%;
+            max-width: 400px;
+            background: #2d1b4d;
+            padding: 30px;
+            border-radius: 20px;
+            border: 2px solid var(--primary-color);
+            z-index: 2000;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+        }
+
+        #final-popup p {
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+
+        .close-btn {
+            margin-top: 20px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Loading -->
+    <div id="loader">
+        <div class="heart-loader"></div>
+        <p>جاري التحميل...</p>
+        <p id="wait-msg" style="margin-top: 10px; font-size: 0.9rem; opacity: 0.8;">ثواني ياروحي معلش ✨❤️</p>
+    </div>
+
+    <!-- Login -->
+    <div id="login-screen">
+        <img src="1.jpg" class="profile-pic" alt="الملكة">
+        <h2 style="margin-bottom: 10px;">جاهزة؟ 🤔</h2>
+        <p style="margin-bottom: 25px; font-size: 0.9rem; opacity: 0.8;">كل الي هنا هيفضل بيني وبينك طول العمر ❤️</p>
+        <div class="input-group">
+            <input type="text" id="pass-input" placeholder="اكتبي الباسورد هنا...">
+        </div>
+        <p style="margin-top: 10px; font-size: 0.8rem;">يلا بسرعة افتحي 😂❤️🤚</p>
+        <button id="login-btn">فتح القفل 🔓</button>
+    </div>
+
+    <!-- Content -->
+    <div id="main-content">
+        <div class="header-title">✨ بحبك يا ملك ❤️ ✨</div>
+
+        <div class="milestone-container">
+            <div class="milestone-item">
+                <span class="milestone-date">10/7/2008</span>
+                اليوم اتولدت فيه اجمل ملوكا ف الدنيا 🥹🌍🫶
+            </div>
+            <div class="milestone-item">
+                <span class="milestone-date">2/3/2026</span>
+                دا اليوم اللي لفتي نظري فيه لاول مرة 👀☺️
+            </div>
+            <div class="milestone-item">
+                <span class="milestone-date">12/3/2026</span>
+                دا اليوم اللي بدات احاول اقرب منك فيه ☺️💗
+            </div>
+            <div class="milestone-item">
+                <span class="milestone-date">21/3/2026</span>
+                اليوم دا اتكلمنا في اول مكالمة بينا 📞☺️💗
+            </div>
+            <div class="milestone-item">
+                <span class="milestone-date">27/3/2026</span>
+                دا اكتر يوم اتكلمنا كول فيه📞🌍🥹
+            </div>
+        </div>
+
+        <h3 style="margin-top: 30px;">بداية عمري معاكي ❤️</h3>
+        <p style="font-size: 0.8rem; opacity: 0.8;">هيفضل شغال طول ما احنا مع بعض 🕒</p>
+        
+        <div class="counter-box">
+            <div class="counter-unit"><span class="counter-value" id="days">0</span><span class="counter-label">يوم</span></div>
+            <div class="counter-unit"><span class="counter-value" id="hours">0</span><span class="counter-label">ساعة</span></div>
+            <div class="counter-unit"><span class="counter-value" id="minutes">0</span><span class="counter-label">دقيقة</span></div>
+            <div class="counter-unit"><span class="counter-value" id="seconds">0</span><span class="counter-label">ثانية</span></div>
+        </div>
+
+        <p style="margin: 30px 0; color: #ffeb3b; font-weight: bold;">😂 اقفي هنا شوية متجريش</p>
+
+        <div class="cards-grid">
+            <div class="love-card" onclick="showMsg('بحبك وبموت فيكي كمان ❤️')">
+                <span class="card-icon">❤️</span>
+                <span>بحبك</span>
+            </div>
+            <div class="love-card" onclick="showMsg('انتي دنيتي كلها يا ملوكا 🌍')">
+                <span class="card-icon">✨</span>
+                <span>بموت فيكي</span>
+            </div>
+            <div class="love-card" onclick="showMsg('مش بس بعشقك، انا مدمن عليكي 🔐')">
+                <span class="card-icon">🔐</span>
+                <span>بعشقك</span>
+            </div>
+            <div class="love-card" onclick="showMsg('ربنا يديمك في حياتي يا نور عيني 🥺')">
+                <span class="card-icon">🥺</span>
+                <span>ادماني</span>
+            </div>
+        </div>
+
+        <h3 style="margin: 40px 0 20px;">حياتي بختصار هنا 👇❤️</h3>
+        <div class="gallery" id="gallery-box">
+            <!-- سيتم إضافة الصور هنا -->
+        </div>
+
+        <p style="padding: 20px; font-size: 0.8rem; opacity: 0.5;">Designed with love for Malak</p>
+    </div>
+
+    <!-- Popup -->
+    <div id="final-popup">
+        <span style="font-size: 3rem;">✉️</span>
+        <h3 style="margin: 15px 0;">رسالة خاصة</h3>
+        <p id="final-msg-text">عايز اقولك اني بحبك وانك اغلي حاجة عندي واني مقدرش اعيش من غيرك وربنا يخليكي ليا يا احلي ام تيا ف الدنيا</p>
+        <button class="close-btn" onclick="document.getElementById('final-popup').style.display='none'">إغلاق ❤️</button>
+    </div>
+
+    <audio id="bg-music" src="music.mp3"></audio>
+
+    <script>
+        // Settings
+        const PASSWORD = "i love you malak";
+        const START_DATE = new Date("2026-03-16T18:47:00"); // 16/3/2026 6:47 PM
+        const SONG_START_TIME = 41; // Start from 00:41
+
+        // Loader
+        setTimeout(() => {
+            document.getElementById('loader').style.display = 'none';
+            document.getElementById('login-screen').style.display = 'flex';
+        }, 3000);
+
+        // Login Logic
+        const loginBtn = document.getElementById('login-btn');
+        const passInput = document.getElementById('pass-input');
+        const music = document.getElementById('bg-music');
+
+        loginBtn.addEventListener('click', () => {
+            if (passInput.value.toLowerCase().trim() === PASSWORD) {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('main-content').style.display = 'block';
+                setTimeout(() => { document.getElementById('main-content').style.opacity = '1'; }, 100);
+                
+                // Start Music
+                music.currentTime = SONG_START_TIME;
+                music.play();
+                
+                startCounter();
+                createRain();
+                loadImages();
+            } else {
+                alert("الباسورد غلط يا مالك! ركزي 😂");
+            }
+        });
+
+        // Counter
+        function startCounter() {
+            setInterval(() => {
+                const now = new Date();
+                const diff = now - START_DATE;
+
+                const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+                const m = Math.floor((diff / 1000 / 60) % 60);
+                const s = Math.floor((diff / 1000) % 60);
+
+                document.getElementById('days').innerText = d;
+                document.getElementById('hours').innerText = h;
+                document.getElementById('minutes').innerText = m;
+                document.getElementById('seconds').innerText = s;
+            }, 1000);
+        }
+
+        // Heart Rain
+        function createRain() {
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.innerHTML = '❤️';
+                heart.className = 'heart-float';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = (Math.random() * 2 + 3) + 's';
+                document.body.appendChild(heart);
+                setTimeout(() => heart.remove(), 5000);
+            }, 400);
+        }
+
+        // Gallery Images (Assume user uploaded 5 images named 1.jpg to 5.jpg)
+        function loadImages() {
+            const gallery = document.getElementById('gallery-box');
+            for(let i=1; i<=8; i++) {
+                const img = document.createElement('img');
+                img.src = `${i}.jpg`;
+                img.onerror = () => img.style.display = 'none'; // Skip if not found
+                gallery.appendChild(img);
+            }
+        }
+
+        function showMsg(text) {
+            alert(text);
+            if(text.includes('ادماني')) {
+                document.getElementById('final-popup').style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>
